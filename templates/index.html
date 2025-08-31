@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Students Management System</h1>
+
+        <div class="form-container">
+            <h2>Add / Update Student</h2>
+            <form method="POST" action="{{ url_for('add_student') if not update_id else url_for('update_student', std_id=update_id) }}">
+                <input type="text" name="std_id" placeholder="Student ID" value="{{ update_id if update_id else '' }}" {% if update_id %} readonly {% endif %}>
+                <input type="text" name="std_name" placeholder="Student Name" required>
+                <input type="text" name="std_class" placeholder="Class" required>
+                {% for sub in ['math','physic','computer'] %}
+                <input type="number" name="{{ sub }}" placeholder="{{ sub|capitalize }} Marks" min="0" max="100">
+                {% endfor %}
+                <button type="submit">{{ 'Update' if update_id else 'Add' }}</button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <h2>All Students</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Math</th>
+                        <th>Physic</th>
+                        <th>Computer</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for std_id, record in students.items() %}
+                    <tr>
+                        <td>{{ std_id }}</td>
+                        <td>{{ record.std_name }}</td>
+                        <td>{{ record.std_class }}</td>
+                        <td>{{ record.math }}</td>
+                        <td>{{ record.physic }}</td>
+                        <td>{{ record.computer }}</td>
+                        <td>
+                            <a href="{{ url_for('update_student', std_id=std_id) }}">Edit</a> | 
+                            <a href="{{ url_for('delete_student', std_id=std_id) }}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
